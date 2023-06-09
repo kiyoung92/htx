@@ -6,8 +6,8 @@
 - cd htx
 - app.js 파일에 유저, 세팅 정보 입력
 - yarn start
-- 지정한 서버 포트에 request
-- response에서 홈택스 유저 정보를 확인하세요.
+- request : yourServer/login
+- response : 홈택스 유저 정보를 확인하세요.
 - 추후 인증서 등록 등 기능 추가 예정
 #### 문제가 될 시 아래 링크로 이슈 남겨주시면 빠른 삭제 또는 조치하도록 하겠습니다.
 https://github.com/kiyoung92/htx/issues
