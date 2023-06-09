@@ -3,7 +3,8 @@ const pp = require('puppeteer');
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
-const keyPair = require('../certificate/common.js');
+// const keyPair = require('../certificate/common.js');
+const { AccreditedCertificatePair } = require('accredited-certificate');
 const state = require('../state/state.js');
 
 router.get('/login', async (req, res) => {
@@ -15,7 +16,7 @@ router.get('/login', async (req, res) => {
     let nowDate = new Date();
     let hashDate = `${nowDate.getFullYear()}${nowDate.getMonth() + 1 < 10 ? '0' + (nowDate.getMonth() + 1) : nowDate.getMonth() + 1}${nowDate.getDate() < 10 ? '0' + nowDate.getDate() : nowDate.getDate()}${nowDate.getHours() < 10 ? '0' + nowDate.getHours() : nowDate.getHours()}${nowDate.getMinutes() < 10 ? '0' + nowDate.getMinutes() : nowDate.getMinutes()}${nowDate.getSeconds() < 10 ? '0' + nowDate.getSeconds() : nowDate.getSeconds()}`;
     let pem = `-----BEGIN CERTIFICATE-----\n${publicCert.match(new RegExp('.{1,64}', 'g')).join('\n')}\n-----END CERTIFICATE-----`;
-    let privateCertInfo = new keyPair(fs.readFileSync(publicCertPath), fs.readFileSync(privateCertPath), state.SET_INFO.CERTIFICATE_PASSWORD);
+    let privateCertInfo = new AccreditedCertificatePair(fs.readFileSync(publicCertPath), fs.readFileSync(privateCertPath), state.SET_INFO.CERTIFICATE_PASSWORD);
     let randomValue = Buffer.from(privateCertInfo.privateCertificate.random.valueBlock.valueHex, 'utf8').toString('base64');
 
     const bs = await pp.launch({

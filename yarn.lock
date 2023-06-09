@@ -56,6 +56,14 @@ accepts@~1.3.8:
     mime-types "~2.1.34"
     negotiator "0.6.3"
 
+accredited-certificate@^0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/accredited-certificate/-/accredited-certificate-0.0.1.tgz#592e28d450ad7750e89c866bdc0fc6617a265705"
+  integrity sha512-MkoQwpPMYtKVAkHbjzGdhu4bkGdV2SnKEIQT8+oOnq1W76+nU0FAlobTdCoQWmMwQMccHqhGCYlK5afaES0qSg==
+  dependencies:
+    asn1js "^2.1.1"
+    pkijs "^2.1.94"
+
 acorn-walk@^8.2.0:
   version "8.2.0"
   resolved "https://registry.yarnpkg.com/acorn-walk/-/acorn-walk-8.2.0.tgz#741210f2e2426454508853a2f44d0ab83b7f69c1"
@@ -102,7 +110,14 @@ array-flatten@1.1.1:
   resolved "https://registry.yarnpkg.com/array-flatten/-/array-flatten-1.1.1.tgz#9a5f699051b1e7073328f2a008968b64ea2955d2"
   integrity sha512-PCVAQswWemu6UdxsDFFX/+gVeYqKAod3D3UVm91jHwynguOwAvYPhx8nNlM++NqRcK6CxxpUafjmhIdKiHibqg==
 
-asn1js@^3.0.5:
+asn1js@^2.1.1:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/asn1js/-/asn1js-2.4.0.tgz#9ca61dbdd7e4eb49b9ae95b36ab0615b77daff93"
+  integrity sha512-PvZC0FMyMut8aOnR2jAEGSkmRtHIUYPe9amUEnGjr9TdnUmsfoOkjrvUkOEU9mzpYBR1HyO9bF+8U1cLTMMHhQ==
+  dependencies:
+    pvutils "^1.1.3"
+
+asn1js@^3.0.3, asn1js@^3.0.5:
   version "3.0.5"
   resolved "https://registry.yarnpkg.com/asn1js/-/asn1js-3.0.5.tgz#5ea36820443dbefb51cc7f88a2ebb5b462114f38"
   integrity sha512-FVnvrKJwpt9LP2lAMl8qZswRNm3T4q9CON+bxldk2iwk3FFpuwhx2FfinyitizWHsVYyaY+y5JzDR0rCMV5yTQ==
@@ -172,6 +187,11 @@ bytes@3.1.2:
   version "3.1.2"
   resolved "https://registry.yarnpkg.com/bytes/-/bytes-3.1.2.tgz#8b0beeb98605adf1b128fa4386403c009e0221a5"
   integrity sha512-/Nf7TyzTx6S3yRJObOAV7956r8cr2+Oj8AC5dt8wSP3BQAoeX58NoHyCU8P8zGkNXStjTSi6fzO6F0pBdcYbEg==
+
+bytestreamjs@^1.0.29:
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/bytestreamjs/-/bytestreamjs-1.1.3.tgz#754f43495dab0e480af8dc174bf978c503ff8da8"
+  integrity sha512-JDGoiJ+yt+4Ui1e/vMWx5TRvmnErBBbsOkprXgbe1fRp2XZzI8MoknoiR/ZVCya9aWJbOhrJ5Heon1wrAdftkg==
 
 bytestreamjs@^2.0.0:
   version "2.0.1"
@@ -880,6 +900,15 @@ pend@~1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/pend/-/pend-1.2.0.tgz#7a57eb550a6783f9115331fcf4663d5c8e007a50"
   integrity sha512-F3asv42UuXchdzt+xXqfW1OGlVBe+mxa2mqI0pg5yAHZPvFmY3Y6drSf/GQ1A86WgWEN9Kzh/WrgKa6iGcHXLg==
+
+pkijs@^2.1.94:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/pkijs/-/pkijs-2.4.0.tgz#ae5babf89c94f4606a4b9c89b9a7d4e57862445a"
+  integrity sha512-cjJP/mYuGyMrjJ49jI04khId5Oufd3nFTUYBzQTIIVNI7/oAWdwXEfpwTF8HELFV/gz+WGYUBHCe3KHWD8rYvg==
+  dependencies:
+    asn1js "^3.0.3"
+    bytestreamjs "^1.0.29"
+    pvutils "^1.1.3"
 
 pkijs@^3.0.15:
   version "3.0.15"
