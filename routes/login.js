@@ -3,10 +3,10 @@ const pp = require('puppeteer');
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
-const Kp = require('../certificate/common.js');
+const keyPair = require('../certificate/common.js');
 const state = require('../state/state.js');
 
-router.get('/', async (req, res) => {
+router.get('/login', async (req, res) => {
     let publicCertPath = path.join(state.SET_INFO.PUBLIC_CERT_PATH, state.SET_INFO.PUBLIC_CERT_FILE_NAME);
     let privateCertPath = path.join(state.SET_INFO.PRIVATE_CERT_PATH, state.SET_INFO.PRIVATE_CERT_FILE_NAME);
     let publicCert = fs.readFileSync(publicCertPath, { encoding: 'base64' });
@@ -15,11 +15,11 @@ router.get('/', async (req, res) => {
     let nowDate = new Date();
     let hashDate = `${nowDate.getFullYear()}${nowDate.getMonth() + 1 < 10 ? '0' + (nowDate.getMonth() + 1) : nowDate.getMonth() + 1}${nowDate.getDate() < 10 ? '0' + nowDate.getDate() : nowDate.getDate()}${nowDate.getHours() < 10 ? '0' + nowDate.getHours() : nowDate.getHours()}${nowDate.getMinutes() < 10 ? '0' + nowDate.getMinutes() : nowDate.getMinutes()}${nowDate.getSeconds() < 10 ? '0' + nowDate.getSeconds() : nowDate.getSeconds()}`;
     let pem = `-----BEGIN CERTIFICATE-----\n${publicCert.match(new RegExp('.{1,64}', 'g')).join('\n')}\n-----END CERTIFICATE-----`;
-    let privateCertInfo = new Kp(fs.readFileSync(publicCertPath), fs.readFileSync(privateCertPath), state.SET_INFO.CERTIFICATE_PASSWORD);
+    let privateCertInfo = new keyPair(fs.readFileSync(publicCertPath), fs.readFileSync(privateCertPath), state.SET_INFO.CERTIFICATE_PASSWORD);
     let randomValue = Buffer.from(privateCertInfo.privateCertificate.random.valueBlock.valueHex, 'utf8').toString('base64');
 
     const bs = await pp.launch({
-        executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+        executablePath: state.SET_INFO.BROWSER_PATH,
         defaultViewport: {
             width: 1000,
             height: 1000,
@@ -53,6 +53,8 @@ router.get('/', async (req, res) => {
     const signature = digitalSign.toString('base64');
     const logSgnt = Buffer.from(`${htxSession.SSN}$${publicCertSN}$${hashDate}$${signature}`, 'utf8').toString('base64');
 
+    await delay(100);
+
     const htxLoginResult = await htxPg.evaluate(async data => {
         const params = { cert: data.cert, logSgnt: data.logSgnt, pkcLgnClCd: '04', pkcLoginYnImpv: 'Y', randomEnc: data.randomValue, WMONID: data.WMONID, NTS_LOGIN_SYSTEM_CODE_P: 'TXPP', TXPPsessionID: data.TXPPsessionID };
         const htxLogin = await fetch(`/pubcLogin.do?domain=hometax.go.kr&mainSys=Y&${new URLSearchParams(params)}`, { method: 'POST' }).then(res => {
@@ -65,5 +67,38 @@ router.get('/', async (req, res) => {
         return htxLogin;
     }, { 'cert': pem, 'logSgnt': logSgnt, 'randomValue': randomValue, 'WMONID': htxSession.WMONID, 'TXPPsessionID': htxSession.TXPPsessionID });
 
-    console.log(htxLoginResult)
+    if (htxLoginResult.lgnRsltCd === '01') {
+        await $log('로그인 성공');
+        let userInfo = await getUserInfo();
+        res.send(userInfo);
+    } else if (htxLoginResult.lgnRsltCd === '03') {
+        await $log('회원가입 후 이용해주세요.');
+        res.send(htxLoginResult);
+    }
+    async function getUserInfo() {
+        let getHtxUserInfo = await htxPg.evaluate(async () => {
+            const getUserInfo = await fetch('/permission.do?screenId=index').then(res => {
+                return res.text();
+            }).then(data => {
+                let xml = new DOMParser();
+                let parser = xml.parseFromString(data, 'text/html');
+    
+                return parser;
+            });
+    
+            let loginUserInfo = { 'USER_NM': getUserInfo.querySelector('usernm').innerHTML, 'USER_BIRTH': getUserInfo.querySelector('bmanofbdt').innerHTML, 'USER_PUB_NM': getUserInfo.querySelector('pubcuserno').innerHTML, 'USER_TIN': getUserInfo.querySelector('tin').innerHTML };
+    
+            return loginUserInfo;
+        });
+
+        return getHtxUserInfo;
+    };
+    function delay(time) {
+        return new Promise((rs) => setTimeout(rs, time));
+    }
+    async function $log(str) {
+        console.log(str);
+    }
 });
+
+module.exports = router;

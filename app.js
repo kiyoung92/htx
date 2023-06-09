@@ -16,7 +16,7 @@ state.SET_INFO = {
     PUPPETEER_HEADLESS: '',     // puppeteer headless ('new' or true or false)
 }
 
-app.use('/login', login);
+app.use('/', login);
 
 app.listen(process.env.PORT, () => {
     console.log('SERVER START');
